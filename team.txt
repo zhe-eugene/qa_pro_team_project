@@ -1,0 +1,2 @@
+Eugene Zhelnitskiy - fineList.js
+Igor Bocharov - inePayments.js
