@@ -34,12 +34,27 @@ alert "Номер не співпадає" або "Сума не співпад�
  */
 buttonSubmit.addEventListener('click', payFine);
 function payFine() {
-    let fineInstance;
+    let targetFineObject;
+    let targetFineIndex;
+    
     // Validate if all fields are not empty
-    if ((!fineNumber.value /*|| !passport.value || !creditCardNumber.value || !cvv.value || !amount.value */)) {
+    if ((!fineNumber.value || !passport.value || !creditCardNumber.value || !cvv.value || !amount.value)) {
         alert('Всі поля мають бути заповнені! Будь ласка перевірте та повторіть операцію.');
         return;
-    }
+    };
+
+    // Check if fine with entered number exists in DB
+    for (let i = 0; i < DB.length; i++) {
+        if (DB[i]['номер'] == fineNumber.value) {
+            targetFineObject = DB[i];
+            targetFineIndex = i;
+            break;
+        };
+    };
+    if (!targetFineObject) {
+        alert('Номер не співпадає!');
+        return;
+    };
 
     // Validate entered passport data
     let passportRegex = /^[А-ЩЬЮЯҐЄІЇа-щьюяґєії]{2}[0-9]{6}$/;
@@ -49,7 +64,7 @@ function payFine() {
     };
 
     // Validate entered credit card format
-    let creditCardRegex = /[0-9]{16}/;
+    let creditCardRegex = /^[0-9]{16}$/;
     let targetCreditCardNumber = creditCardNumber.value;
     //Remove possible space characters in the middle of card number
     if (!targetCreditCardNumber.startsWith(' ') && !targetCreditCardNumber.endsWith(' ')) {
@@ -62,35 +77,32 @@ function payFine() {
     };
 
     // Validate entered cvv value
-    let cvvRegex = /[0-9]{3}/;
+    let cvvRegex = /^[0-9]{3}$/;
     if (!cvvRegex.test(cvv.value)) {
         alert("Невірний cvv!");
         return;
     };
 
-    let targetFineObject;
-    let targetFineIndex;
-    // Check if fine with entered number exists in DB
-    for (let i = 0; i < data.finesData.length; i++) {
-        if (data.finesData[i]['номер'] == fineNumber.value) {
-            targetFineObject = data.finesData[i];
-            targetFineIndex = i;
-            break;
-        }
-    };
-
     // Check if entered amount matches the amount of fine in DB. If Yes - process payment;
     if (targetFineObject) {
         if (targetFineObject['сума'] == amount.value) {
-            // Consider payment as successful
-            // TBD
+            // Consider payment as successful. Remove fine record from DB.
+            DB.splice(targetFineIndex, 1);
             alert('Штраф сплачено успішно!');
+            // Clean input fields
+            cleanInputFields();
         } else {
             alert('Сума не співпадає!');
             return;
         }
-    } else {
-        alert('Номер не співпадає!');
-        return;
+    };
+
+    // Clean input fields
+    function cleanInputFields() {
+        fineNumber.value = '';
+        passport.value = '';
+        creditCardNumber.value = '';
+        cvv.value = '';
+        amount.value = '';
     };
 }
