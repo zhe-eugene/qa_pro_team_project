@@ -45,7 +45,7 @@ function payFine() {
 
     // Check if fine with entered number exists in DB
     for (let i = 0; i < DB.length; i++) {
-        if (DB[i]['номер'] == fineNumber.value) {
+        if (Number(DB[i]['номер']) == Number(fineNumber.value)) {
             targetFineObject = DB[i];
             targetFineIndex = i;
             break;
