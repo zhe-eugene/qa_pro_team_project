@@ -1,6 +1,6 @@
 "use strict";
 window.fineList = {
-    searchFines : searchFines
+    searchFines: searchFines
 }
 
 //Ця зміна містить всі дані які в нас зберігаються у файлі data
@@ -14,6 +14,7 @@ function searchFines(searchKey){
     else if(foundFine.length){ return foundFine;}
 
     alert("not found");  
+
 }
 
 function checkNumber(number)  {
