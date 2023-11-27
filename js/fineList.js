@@ -1,12 +1,12 @@
 "use strict";
 window.fineList = {
-    searchFines : searchFines
+    searchFines: searchFines
 }
 
 //Ця зміна містить всі дані які в нас зберігаються у файлі data
 let DB = data.finesData;
 
-function searchFines(searchKey){
+function searchFines(searchKey) {
     /*
      Напишіть свій код тут!
      Як ви бачите функція повертає статичні дані.
@@ -19,9 +19,24 @@ function searchFines(searchKey){
      - Їзда у не тверезому стані
      */
 
+    let targetArray = [];
+    let fineTypeRegex = /^(Перевищення швидкості|Невірне паркування|Їзда у не тверезому стані)$/;
+    // Check if input is empty or not
+    if (searchKey == '') {
+        alert('Задайте критерій пошуку!');
+        return;
+    };
 
-    return [
-        {номер: '001', тип: 'Перевищення швидкості', сума: 100, дата: '2023-01-15'}
-    ];
+    // Check if input is fine number or type
+    if (isNaN(Number(searchKey))) {
+        if (fineTypeRegex.test(searchKey)) {
+            targetArray = DB.filter(item => item['тип'] == searchKey);
+        } else {
+            alert('Недопустимий тип штрафу!');
+        }
+    } else {
+        targetArray = DB.filter(item => Number(item['номер']) == Number(searchKey));
+    }
+    return targetArray;
 }
 
